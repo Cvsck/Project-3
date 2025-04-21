@@ -1,4 +1,11 @@
-# Project-3
+# Project-3/
+│── api.py        # Работа с API hh.ru
+│── utils.py      # Вспомогательные функции
+│── db_manager.py # Взаимодействие с БД
+│── main.py       # Основной скрипт запуска
+│── requirements.txt # Зависимости проекта
+│── .gitignore    # Файлы для исключения из коммитов
+
 """
 Реализован проект позволяющий пользователю 
 получить данные о работодателях и их вакансиях с сайта hh.ru.
@@ -24,4 +31,13 @@ pip install isort black flake8 pep8
 python.exe -m pip install --upgrade pip
 pip install requests
 pip install mypy
+pip install requests
+pip install psycopg2 requests python-dotenv
+pip freeze > requirements.txt
+pip install -r requirements.txt
+
 """
+# После обновления pyproject.toml, установите все зависимости:
+'''
+poetry install
+'''
