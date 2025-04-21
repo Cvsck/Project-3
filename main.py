@@ -1,6 +1,7 @@
-from api import get_vacancies_by_company
-from utils import save_json, parse_vacancy_data
-from db_manager import DBManager
+from src.api import get_vacancies_by_company
+from src.db_manager import DBManager
+from src.utils import parse_vacancy_data, save_json
+
 
 def main():
     # Запрос имени проекта
