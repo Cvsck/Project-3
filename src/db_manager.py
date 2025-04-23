@@ -20,26 +20,27 @@ class DBManager:
         self.cursor = self.conn.cursor()
 
     def create_tables(self):
-        """Создание таблиц в БД."""
-        self.cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS companies (
+        """Удаляет старые таблицы и создаёт новые."""
+        self.cursor.execute("DROP TABLE IF EXISTS vacancies CASCADE;")
+        self.cursor.execute("DROP TABLE IF EXISTS companies CASCADE;")
+
+        self.cursor.execute("""
+            CREATE TABLE companies (
                 id SERIAL PRIMARY KEY,
                 company_name TEXT NOT NULL UNIQUE
             );
-        """
-        )
-        self.cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS vacancies (
+        """)
+
+        self.cursor.execute("""
+            CREATE TABLE vacancies (
                 id SERIAL PRIMARY KEY,
                 title TEXT NOT NULL,
                 salary INTEGER,
                 url TEXT,
                 company_id INTEGER REFERENCES companies(id) ON DELETE CASCADE
             );
-        """
-        )
+        """)
+
         self.conn.commit()
 
     def get_companies_and_vacancies_count(self):
