@@ -12,18 +12,8 @@ def main():
     DBManager.create_database()
 
     # ID компаний с hh.ru
-    company_ids = [
-        "827187",
-        "1942330",
-        "4869287",
-        "2751781",
-        "3529",
-        "2495333",
-        "4944119",
-        "52511",
-        "956196",
-        "10602050",
-    ]
+    company_ids = ["827187", "1942330", "4869287", "2751781", "3529",
+                   "2495333", "4944119", "52511", "956196", "10602050"]
 
     all_vacancies = []
 
@@ -43,13 +33,10 @@ def main():
 
             # ✅ Если компании нет, добавляем её
             if not company_row:
-                db.cursor.execute(
-                    """
+                db.cursor.execute("""
                     INSERT INTO companies (company_name) VALUES (%s)
                     ON CONFLICT (company_name) DO NOTHING RETURNING id;
-                """,
-                    (company_id,),
-                )
+                """, (company_id,))
                 company_row = db.cursor.fetchone()
 
             company_db_id = company_row[0] if company_row else None
@@ -57,19 +44,31 @@ def main():
             for vacancy in parsed_vacancies:
                 salary_value = vacancy["salary"] if vacancy["salary"] is not None else 0
                 if company_db_id:
-                    db.cursor.execute(
-                        """
+                    db.cursor.execute("""
                         INSERT INTO vacancies (title, salary, url, company_id) 
                         VALUES (%s, %s, %s, %s)
                         ON CONFLICT DO NOTHING;
-                    """,
-                        (vacancy["name"], salary_value, vacancy["url"], company_db_id),
-                    )
+                    """, (vacancy["name"], salary_value, vacancy["url"], company_db_id))
 
     db.conn.commit()
     save_json(all_vacancies, f"{project_name}_vacancies.json")
+
+    # ✅ Вызовы методов для получения данных из БД
+    print("\n📊 Статистика по вакансиям:\n")
+
+    print("🔹 Средняя зарплата по всем вакансиям:")
+    print(db.get_avg_salary())
+
+    print("\n🔹 Компании и количество их вакансий:")
+    for company, count in db.get_companies_and_vacancies_count():
+        print(f"{company}: {count} вакансий")
+
+    print("\n🔹 Вакансии с зарплатой выше средней:")
+    for vacancy in db.get_vacancies_with_higher_salary():
+        print(vacancy)
+
     db.close_connection()
-    print("✅ Данные записаны в БД и сохранены в JSON!")
+    print("✅ Данные записаны в БД, сохранены в JSON и статистика выведена!")
 
 
 if __name__ == "__main__":
