@@ -6,7 +6,7 @@ DATA_DIR = "C:\\Users\\Макс\\my_prj\\Project-3\\data"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 
-def save_json(data, filename):
+def save_json(data: list[dict], filename: str):
     """Сохраняет JSON в 'data'."""
     filepath = os.path.join(DATA_DIR, filename)
     with open(filepath, "w", encoding="utf-8") as f:
@@ -14,7 +14,7 @@ def save_json(data, filename):
     print(f"Файл сохранен: {filepath}")
 
 
-def parse_vacancy_data(vacancies):
+def parse_vacancy_data(vacancies: dict) -> list[dict]:
     """Извлекает важные данные из ответа API."""
     return [
         {"name": v["name"], "salary": v["salary"]["from"] if v["salary"] else None, "url": v["alternate_url"]}
